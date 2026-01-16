@@ -32,8 +32,8 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 # Build frontend assets if needed
 RUN if [ -f package.json ]; then npm install && npm run build || true; fi
 
-# Expose port
-EXPOSE 9000
+# Expose port (Render uses 10000 by default for web services)
+EXPOSE 10000
 
-# Run Laravel migrations and start server
-CMD php artisan key:generate --force && php artisan migrate --force && php-fpm
+# Generate key if needed, cache config, and start Laravel server for Render
+CMD php artisan key:generate --force && php artisan config:cache && php artisan serve --host=0.0.0.0 --port=10000
