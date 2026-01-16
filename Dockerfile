@@ -19,8 +19,14 @@ WORKDIR /var/www/html
 # Copier tout le projet avant d'installer les dépendances
 COPY . .
 
+# Vérifier la présence des assets principaux dans public/assets
+RUN if [ ! -f public/assets/css/main.css ]; then echo 'ERREUR: public/assets/css/main.css manquant !'; exit 1; fi \
+    && if [ ! -f public/assets/js/app.js ]; then echo 'ERREUR: public/assets/js/app.js manquant !'; exit 1; fi
+
 # Installer les dépendances Laravel
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Nettoyer les caches Laravel à chaque build
+RUN php artisan config:clear && php artisan view:clear && php artisan cache:clear || true
 
 # Créer un .env par défaut si absent (pour Render)
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
