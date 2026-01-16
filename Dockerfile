@@ -25,6 +25,9 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 # Créer un .env par défaut si absent (pour Render)
 RUN if [ ! -f .env ]; then cp .env.example .env; fi
 
+# Créer le fichier SQLite si besoin (pour Render)
+RUN mkdir -p database && touch database/database.sqlite
+
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
