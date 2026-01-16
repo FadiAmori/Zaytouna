@@ -16,14 +16,11 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy composer files first for better cache
-COPY composer.json composer.lock ./
-
-# Install Laravel dependencies (before copying all files for better cache)
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
-
-# Copy rest of the application
+# Copier tout le projet avant d'installer les dépendances
 COPY . .
+
+# Installer les dépendances Laravel
+RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
