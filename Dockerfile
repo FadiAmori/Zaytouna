@@ -28,6 +28,9 @@ RUN if [ ! -f .env ]; then cp .env.example .env; fi
 # Créer le fichier SQLite si besoin (pour Render)
 RUN mkdir -p database && touch database/database.sqlite
 
+# Exécuter les migrations pour créer les tables dans la base SQLite
+RUN php artisan migrate --force || true
+
 # Set permissions for Laravel
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
     && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
